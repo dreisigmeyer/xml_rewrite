@@ -3,3 +3,8 @@
 *.c
 CMakeLists.txt
 cmake-build-debug/
+
+# other things to ignore
+*.zip
+nohup*
+messages*
