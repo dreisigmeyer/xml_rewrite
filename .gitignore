@@ -3,6 +3,7 @@
 *.c
 CMakeLists.txt
 cmake-build-debug/
+_Deparsed_XSubs.pm
 
 # other things to ignore
 *.zip

@@ -6,5 +6,3 @@ The included script _get\_uspto\_data.sh_ will download all the required zip fil
 A standard Anaconda Python (https://www.anaconda.com/download/) install was used to develop the code.
 The code was developed using Python 3.6.
 
-
-
