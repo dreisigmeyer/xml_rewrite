@@ -53,5 +53,5 @@ while (my $row = <$inFile>) {
 }
 close $inFile or die "Could not close file '$fileName' $!";
 close $outFile or die "Could not close file '$outFileName' $!";
-# `rm $fileName`;
-# `mv $outFileName $fileName`;
+`rm $fileName`;
+`mv $outFileName $fileName`;
