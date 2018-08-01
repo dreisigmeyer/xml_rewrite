@@ -1,9 +1,19 @@
 #!/usr/bin/env bash
-#source $HOME/perl5/perlbrew/etc/bashrc
-#perlbrew use perl-5.28.0
+
+function clean_dtds {
+    # The DTD files need to be modified for the modified XML files we deal with
+    # The first one works for 2005-present (as of 2014)
+    # The rest work for 2002-2004
+    sed -i -r 's_(<!ELEMENT us-patent-grant.*>)_<!--\1-->\n<!ELEMENT us-patent-grant (us-bibliographic-data-grant , abstract*, sequence-list-doc?)>_' $1
+    sed -i -r 's_(<!ELEMENT PATDOC.*>)_<!--\1-->\n<!ELEMENT PATDOC (SDOBI,SDOAB?,SDODE,SDOCL*,SDODR?,SDOCR?)>_' $2
+    sed -i -r 's_(FILE[ ]*ENTITY)[ ]*(#REQUIRED)(.*)_\1 #IMPLIED \3_g' $2
+    sed -i -r 's_(<!ELEMENT CHEM-US.*>)_<!--\1-->\n<!ELEMENT CHEM-US \(CHEMCDX?,CHEMMOL?,EMI?\)>_' $2
+    sed -i -r 's_(<!ELEMENT MATH-US.*>)_<!--\1-->\n<!ELEMENT MATH-US \(MATHEMATICA?,MATHML?,EMI?\)>_' $2
+    sed -i -r 's_(<!ELEMENT BTEXT.*>)_<!--\1-->\n<!ELEMENT BTEXT \(H | PARA | CWU | IMG\)*>_' $2
+}
 
 # will get our USPTO XML files ready for processing
-unzip_and_csplit(){
+function unzip_and_csplit {
     OUTDIR='./rewriter/original_xml_files'
     INDIR="${1%_*}"
     FILENAME=$(basename -- "$INDIR")
@@ -29,3 +39,10 @@ done
 )
 
 #python -m rewriter
+
+#for FOLDER_NAME in ./rewriter/original_xml_files/; do
+#    cp -r ./rewriter/DTDs/* "$FOLDER_NAME"
+#    clean_dtds "$FOLDER_NAME"/\*.dtd "$FOLDER_NAME"/ST32-US-Grant-025xml.dtd
+#    zip -q -r "$FOLDER_NAME".zip "$FOLDER_NAME"
+#done
+
