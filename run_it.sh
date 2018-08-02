@@ -12,8 +12,8 @@ function clean_dtds {
     sed -i -r 's_(<!ELEMENT BTEXT.*>)_<!--\1-->\n<!ELEMENT BTEXT \(H | PARA | CWU | IMG\)*>_' $2
 }
 
-# will get our USPTO XML files ready for processing
 function unzip_and_csplit {
+    # will get our USPTO XML files ready for processing
     OUTDIR='./rewriter/original_xml_files'
     INDIR="${1%_*}"
     FILENAME=$(basename -- "$INDIR")
@@ -22,7 +22,8 @@ function unzip_and_csplit {
     perl -w gbd_cleaner.pl "$OUTDIR/$FILENAME/$FILENAME.xml"
     csplit -sz -f "$OUTDIR/$FILENAME/" -b '%d.xml' "$OUTDIR/$FILENAME/$FILENAME.xml" '/^<?xml/' '{*}'
     rm "$OUTDIR/$FILENAME/$FILENAME.xml"
-    rm "$OUTDIR/$FILENAME/"*.txt
+    rm -f "$OUTDIR/$FILENAME/"*.txt
+    rm -f "$OUTDIR/$FILENAME/"*.html
 }
 
 # downloads the USPTO data 2002-2017
@@ -30,15 +31,14 @@ function unzip_and_csplit {
 
 # run this in parallel with N processes
 N=4
-(
 for FILE in ./rewriter/raw_xml_files/*.zip
 do
     ((i=i%N)); ((i++==0)) && wait
     unzip_and_csplit "$FILE" &
 done
-)
+wait
 
-#python -m rewriter
+python -m rewriter
 
 #for FOLDER_NAME in ./rewriter/original_xml_files/; do
 #    cp -r ./rewriter/DTDs/* "$FOLDER_NAME"
