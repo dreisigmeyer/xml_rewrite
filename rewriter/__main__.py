@@ -20,7 +20,7 @@ for in_directory in glob.glob(in_dir_path + '*'):
         warnings.warn('Patent grant year ' + str(grant_year) + ' is not a valid year (currently 2002 to present).')
         continue
     out_directory = out_dir_path + uspto_name
-    shutil.rmtree(out_directory)  # if directory is already there
+    shutil.rmtree(out_directory, ignore_errors=True)  # if directory is already there
     os.mkdir(out_directory)
     in_directory += '/'
     out_directory += '/'

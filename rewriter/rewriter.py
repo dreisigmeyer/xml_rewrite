@@ -1,4 +1,5 @@
-import xml.etree.ElementTree as ElementTree
+# import xml.etree.ElementTree as ElementTree
+from lxml import etree
 import warnings
 
 
@@ -11,7 +12,9 @@ def remove_inventors_2002_to_2004(in_file, out_file):
     """
     pat_num_path = './/B110/DNUM/PDAT'
     inventor_path = './/B720'
-    tree = ElementTree.parse(in_file)
+    # tree = ElementTree.parse(in_file)
+    invalid_validator = etree.XMLParser(dtd_validation=True, resolve_entities=True)
+    tree = etree.parse(in_file, invalid_validator)
     root = tree.getroot()
     pat_num = root.find(pat_num_path).text
     if not pat_num:
@@ -35,7 +38,9 @@ def remove_inventors_2005_to_present(in_file, out_file):
     pat_num_path = './/publication-reference//doc-number'
     inventor_path = './/inventors'
     applicants_paths = ['.//us-applicants', './/applicants']
-    tree = ElementTree.parse(in_file)
+    # tree = ElementTree.parse(in_file)
+    invalid_validator = etree.XMLParser(dtd_validation=True, resolve_entities=True)
+    tree = etree.parse(in_file, invalid_validator)
     root = tree.getroot()
     pat_num = root.find(pat_num_path).text
     if not pat_num:

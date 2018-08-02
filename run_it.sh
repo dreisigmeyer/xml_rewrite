@@ -38,11 +38,19 @@ do
 done
 wait
 
+for FOLDER_NAME in ./rewriter/original_xml_files/*; do
+    cp -r ./rewriter/DTDs/* "$FOLDER_NAME"
+    clean_dtds "$FOLDER_NAME"/\*.dtd "$FOLDER_NAME"/ST32-US-Grant-025xml.dtd
+done
+
 python -m rewriter
 
-#for FOLDER_NAME in ./rewriter/original_xml_files/; do
-#    cp -r ./rewriter/DTDs/* "$FOLDER_NAME"
-#    clean_dtds "$FOLDER_NAME"/\*.dtd "$FOLDER_NAME"/ST32-US-Grant-025xml.dtd
-#    zip -q -r "$FOLDER_NAME".zip "$FOLDER_NAME"
-#done
+for FOLDER_NAME in ./rewriter/original_xml_files/*; do
+    zip -q -r "$FOLDER_NAME".zip "$FOLDER_NAME"
+done
 
+for FOLDER_NAME in ./rewriter/modified_xml_files/*; do
+    cp -r ./rewriter/DTDs/* "$FOLDER_NAME"
+    clean_dtds "$FOLDER_NAME"/\*.dtd "$FOLDER_NAME"/ST32-US-Grant-025xml.dtd
+    zip -q -r "$FOLDER_NAME".zip "$FOLDER_NAME"
+done
