@@ -43,7 +43,7 @@ for FOLDER_NAME in ./rewriter/original_xml_files/*; do
     clean_dtds "$FOLDER_NAME"/\*.dtd "$FOLDER_NAME"/ST32-US-Grant-025xml.dtd
 done
 
-python -m rewriter
+python -m rewriter N
 
 for FOLDER_NAME in ./rewriter/original_xml_files/*; do
     zip -q -r "$FOLDER_NAME".zip "$FOLDER_NAME"
