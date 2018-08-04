@@ -6,10 +6,10 @@ function clean_dtds {
     # The rest work for 2002-2004
     sed -i -r 's_(<!ELEMENT us-patent-grant.*>)_<!--\1-->\n<!ELEMENT us-patent-grant (us-bibliographic-data-grant , abstract*, sequence-list-doc?)>_' $1
     sed -i -r 's_(<!ELEMENT PATDOC.*>)_<!--\1-->\n<!ELEMENT PATDOC (SDOBI,SDOAB?,SDODE,SDOCL*,SDODR?,SDOCR?)>_' $2
-    sed -i -r 's_(FILE[ ]*ENTITY)[ ]*(#REQUIRED)(.*)_\1 #IMPLIED \3_g' $2
-    sed -i -r 's_(<!ELEMENT CHEM-US.*>)_<!--\1-->\n<!ELEMENT CHEM-US \(CHEMCDX?,CHEMMOL?,EMI?\)>_' $2
-    sed -i -r 's_(<!ELEMENT MATH-US.*>)_<!--\1-->\n<!ELEMENT MATH-US \(MATHEMATICA?,MATHML?,EMI?\)>_' $2
-    sed -i -r 's_(<!ELEMENT BTEXT.*>)_<!--\1-->\n<!ELEMENT BTEXT \(H | PARA | CWU | IMG\)*>_' $2
+#    sed -i -r 's_(FILE[ ]*ENTITY)[ ]*(#REQUIRED)(.*)_\1 #IMPLIED \3_g' $2
+#    sed -i -r 's_(<!ELEMENT CHEM-US.*>)_<!--\1-->\n<!ELEMENT CHEM-US \(CHEMCDX?,CHEMMOL?,EMI?\)>_' $2
+#    sed -i -r 's_(<!ELEMENT MATH-US.*>)_<!--\1-->\n<!ELEMENT MATH-US \(MATHEMATICA?,MATHML?,EMI?\)>_' $2
+#    sed -i -r 's_(<!ELEMENT BTEXT.*>)_<!--\1-->\n<!ELEMENT BTEXT \(H | PARA | CWU | IMG\)*>_' $2
 }
 
 function unzip_and_csplit {
@@ -19,7 +19,7 @@ function unzip_and_csplit {
     FILENAME=$(basename -- "$INDIR")
     unzip -qq -o -j "$1" -d "$OUTDIR/$FILENAME"
     # there's HTML etc in the XML files
-    perl -w gbd_cleaner.pl "$OUTDIR/$FILENAME/$FILENAME.xml"
+#    perl -w gbd_cleaner.pl "$OUTDIR/$FILENAME/$FILENAME.xml"
     csplit -sz -f "$OUTDIR/$FILENAME/" -b '%d.xml' "$OUTDIR/$FILENAME/$FILENAME.xml" '/^<?xml/' '{*}'
     rm "$OUTDIR/$FILENAME/$FILENAME.xml"
     rm -f "$OUTDIR/$FILENAME/"*.txt
@@ -30,20 +30,23 @@ function unzip_and_csplit {
 #./get_uspto_data.sh
 
 # run this in parallel with N processes
-N=4
+NUM_THREADS=4
 for FILE in ./rewriter/raw_xml_files/*.zip
 do
-    ((i=i%N)); ((i++==0)) && wait
+    ((i=i%NUM_THREADS)); ((i++==0)) && wait
     unzip_and_csplit "$FILE" &
 done
 wait
+#do
+#    unzip_and_csplit "$FILE"
+#done
 
 for FOLDER_NAME in ./rewriter/original_xml_files/*; do
     cp -r ./rewriter/DTDs/* "$FOLDER_NAME"
     clean_dtds "$FOLDER_NAME"/\*.dtd "$FOLDER_NAME"/ST32-US-Grant-025xml.dtd
 done
 
-python -m rewriter N
+python -m rewriter $NUM_THREADS
 
 for FOLDER_NAME in ./rewriter/original_xml_files/*; do
     zip -q -r "$FOLDER_NAME".zip "$FOLDER_NAME"

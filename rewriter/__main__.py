@@ -46,12 +46,20 @@ def process_files(directories):
         for in_file in glob.glob(in_directory + '*.xml'):
             filename = os.path.basename(in_file)
             out_file = out_directory + filename
+            pat_num = ''
             if 2002 <= grant_year <= 2004:
-                pat_num = remove_inventors_2002_to_2004(in_file, out_file)
+                try:
+                    pat_num = remove_inventors_2002_to_2004(in_file, out_file)
+                except Exception as e:
+                    print(e)
             else:
-                pat_num = remove_inventors_2005_to_present(in_file, out_file)
-            os.rename(in_file, in_directory + pat_num + '.xml')
-            os.rename(out_file, out_directory + pat_num + '.xml')
+                try:
+                    pat_num = remove_inventors_2005_to_present(in_file, out_file)
+                except Exception as e:
+                    print(e)
+            if pat_num:
+                os.rename(in_file, in_directory + pat_num + '.xml')
+                os.rename(out_file, out_directory + pat_num + '.xml')
 
 
 number_of_processes = int(sys.argv[1])
