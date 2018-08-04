@@ -4,6 +4,8 @@
 CMakeLists.txt
 cmake-build-debug/
 _Deparsed_XSubs.pm
+*.sublime-project
+*.sublime-workspace
 
 # other things to ignore
 *.zip

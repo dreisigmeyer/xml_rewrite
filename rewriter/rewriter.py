@@ -12,8 +12,8 @@ def remove_inventors_2002_to_2004(in_file, out_file):
     """
     pat_num_path = './/B110/DNUM/PDAT'
     inventor_path = './/B720'
-    invalid_validator = etree.XMLParser(dtd_validation=True, resolve_entities=True, encoding='utf-8')
-    magic_validator = etree.XMLParser(dtd_validation=True, resolve_entities=True, encoding='utf-8', recover=True)
+    invalid_validator = etree.XMLParser(dtd_validation=True, resolve_entities=False, encoding='utf-8')
+    magic_validator = etree.XMLParser(dtd_validation=True, resolve_entities=False, encoding='utf-8', recover=True)
     try:
         tree = etree.parse(in_file, parser=invalid_validator)
     except Exception as e:
@@ -42,8 +42,8 @@ def remove_inventors_2005_to_present(in_file, out_file):
     pat_num_path = './/publication-reference//doc-number'
     inventor_path = './/inventors'
     applicants_paths = ['.//us-applicants', './/applicants']
-    invalid_validator = etree.XMLParser(dtd_validation=True, resolve_entities=True, encoding='utf-8')
-    magic_validator = etree.XMLParser(dtd_validation=True, resolve_entities=True, encoding='utf-8', recover=True)
+    invalid_validator = etree.XMLParser(dtd_validation=True, resolve_entities=False, encoding='utf-8')
+    magic_validator = etree.XMLParser(dtd_validation=True, resolve_entities=False, encoding='utf-8', recover=True)
     try:
         tree = etree.parse(in_file, parser=invalid_validator)
     except Exception as e:
