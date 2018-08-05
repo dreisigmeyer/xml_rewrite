@@ -32,28 +32,29 @@ function unzip_and_csplit {
 # run this in parallel with N processes
 NUM_THREADS=4
 for FILE in ./rewriter/raw_xml_files/*.zip
+# do
+#     ((i=i%NUM_THREADS)); ((i++==0)) && wait
+#     unzip_and_csplit "$FILE" &
+# done
+# wait
 do
-    ((i=i%NUM_THREADS)); ((i++==0)) && wait
-    unzip_and_csplit "$FILE" &
-done
-wait
-#do
-#    unzip_and_csplit "$FILE"
-#done
-
-for FOLDER_NAME in ./rewriter/original_xml_files/*; do
-    cp -r ./rewriter/DTDs/* "$FOLDER_NAME"
-    clean_dtds "$FOLDER_NAME"/\*.dtd "$FOLDER_NAME"/ST32-US-Grant-025xml.dtd
+   unzip_and_csplit "$FILE"
 done
 
+# for FOLDER_NAME in ./rewriter/original_xml_files/*; do
+#     cp -r ./rewriter/DTDs/* "$FOLDER_NAME"
+#     clean_dtds "$FOLDER_NAME"/\*.dtd "$FOLDER_NAME"/ST32-US-Grant-025xml.dtd
+# done
+cp -r ./rewriter/DTDs/* ./rewriter/clean_DTDs
+clean_dtds ./rewriter/clean_DTDs/\*.dtd ./rewriter/clean_DTDs/ST32-US-Grant-025xml.dtd
 python -m rewriter $NUM_THREADS
 
 for FOLDER_NAME in ./rewriter/original_xml_files/*; do
-    bzip2 -q "$FOLDER_NAME"
+    zip -q -r "$FOLDER_NAME"
 done
 
 for FOLDER_NAME in ./rewriter/modified_xml_files/*; do
     cp -r ./rewriter/DTDs/* "$FOLDER_NAME"
     clean_dtds "$FOLDER_NAME"/\*.dtd "$FOLDER_NAME"/ST32-US-Grant-025xml.dtd
-    bzip2 -q "$FOLDER_NAME"
+    zip -q -r "$FOLDER_NAME"
 done
