@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+
 function clean_dtds {
     # The DTD files need to be modified for the modified XML files we deal with
     # The first one works for 2005-present (as of 2014)
@@ -12,49 +13,16 @@ function clean_dtds {
 #    sed -i -r 's_(<!ELEMENT BTEXT.*>)_<!--\1-->\n<!ELEMENT BTEXT \(H | PARA | CWU | IMG\)*>_' $2
 }
 
-function unzip_and_csplit {
-    # will get our USPTO XML files ready for processing
-    OUTDIR='./rewriter/original_xml_files'
-    INDIR="${1%_*}"
-    FILENAME=$(basename -- "$INDIR")
-    unzip -qq -o -j "$1" -d "$OUTDIR/$FILENAME"
-    # there's HTML etc in the XML files
-#    perl -w gbd_cleaner.pl "$OUTDIR/$FILENAME/$FILENAME.xml"
-    csplit -sz -f "$OUTDIR/$FILENAME/" -b '%d.xml' "$OUTDIR/$FILENAME/$FILENAME.xml" '/^<?xml/' '{*}'
-    rm "$OUTDIR/$FILENAME/$FILENAME.xml"
-    rm -f "$OUTDIR/$FILENAME/"*.txt
-    rm -f "$OUTDIR/$FILENAME/"*.html
-}
 
-# downloads the USPTO data 2002-2017
-#./get_uspto_data.sh
+cp -r ./rewriter/DTDs/* ./rewriter/cleaned_DTDs
+clean_dtds ./rewriter/cleaned_DTDs/\*.dtd ./rewriter/cleaned_DTDs/ST32-US-Grant-025xml.dtd
 
-# run this in parallel with N processes
-NUM_THREADS=4
-for FILE in ./rewriter/raw_xml_files/*.zip
-# do
-#     ((i=i%NUM_THREADS)); ((i++==0)) && wait
-#     unzip_and_csplit "$FILE" &
-# done
-# wait
-do
-   unzip_and_csplit "$FILE"
-done
-
-# for FOLDER_NAME in ./rewriter/original_xml_files/*; do
-#     cp -r ./rewriter/DTDs/* "$FOLDER_NAME"
-#     clean_dtds "$FOLDER_NAME"/\*.dtd "$FOLDER_NAME"/ST32-US-Grant-025xml.dtd
-# done
-cp -r ./rewriter/DTDs/* ./rewriter/clean_DTDs
-clean_dtds ./rewriter/clean_DTDs/\*.dtd ./rewriter/clean_DTDs/ST32-US-Grant-025xml.dtd
-python -m rewriter $NUM_THREADS
+NUM_PY_THREADS=4
+python -m rewriter $NUM_PY_THREADS
 
 for FOLDER_NAME in ./rewriter/original_xml_files/*; do
     zip -q -r "$FOLDER_NAME"
 done
-
 for FOLDER_NAME in ./rewriter/modified_xml_files/*; do
-    cp -r ./rewriter/DTDs/* "$FOLDER_NAME"
-    clean_dtds "$FOLDER_NAME"/\*.dtd "$FOLDER_NAME"/ST32-US-Grant-025xml.dtd
     zip -q -r "$FOLDER_NAME"
 done
