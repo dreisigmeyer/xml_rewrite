@@ -21,25 +21,28 @@ def split_seq(seq, num_processes):
         num_processes = num_files
     size = num_processes
     newseq = []
-    splitsize = 1.0/size*num_files
+    splitsize = 1.0 / size * num_files
     for i in range(size):
-        newseq.append(seq[int(round(i*splitsize)):int(round((i+1)*splitsize))])
+        newseq.append(
+            seq[int(round(i * splitsize)):int(round((i + 1) * splitsize))])
     return newseq
 
 
 def process_files(directories):
     out_dir_path = 'rewriter/modified_xml_files/'
-    grant_year_re = re.compile('i?pgb([0-9]{8})')  # To get the grant year from the GBD file name
+    grant_year_re = re.compile('i?pgb([0-9]{8})')
     now = datetime.datetime.now()
     current_yr = now.year + 1
     for in_directory in directories:
         uspto_name = os.path.basename(in_directory)
         grant_year = int(grant_year_re.match(uspto_name).group(1)[:4])
         if grant_year not in range(2002, current_yr):
-            warnings.warn('Patent grant year ' + str(grant_year) + ' is not a valid year (currently 2002 to present).')
+            warnings.warn(
+                'Patent grant year ' + str(grant_year) +
+                ' is not a valid year (currently 2002 to present).')
             continue
         out_directory = out_dir_path + uspto_name
-        shutil.rmtree(out_directory, ignore_errors=True)  # if directory is already there
+        shutil.rmtree(out_directory, ignore_errors=True)
         os.mkdir(out_directory)
         in_directory += '/'
         out_directory += '/'
@@ -54,7 +57,8 @@ def process_files(directories):
                     print(e)
             else:
                 try:
-                    pat_num = remove_inventors_2005_to_present(in_file, out_file)
+                    pat_num = remove_inventors_2005_to_present(
+                        in_file, out_file)
                 except Exception as e:
                     print(e)
             if pat_num:
