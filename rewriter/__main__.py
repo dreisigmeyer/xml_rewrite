@@ -68,7 +68,9 @@ def process_files(directories):
                     N = 10
                     with open(in_file) as myfile:
                         head = list(islice(myfile, N))
-                    print(head + '\n')
+                        for line in head:
+                            print(line)
+                    print('\n')
             else:
                 try:
                     pat_num = remove_inventors_2005_to_present(
@@ -78,7 +80,9 @@ def process_files(directories):
                     N = 10
                     with open(in_file) as myfile:
                         head = list(islice(myfile, N))
-                    print(head + '\n')
+                        for line in head:
+                            print(line)
+                    print('\n')
             if pat_num:
                 os.rename(in_file, in_directory + pat_num + '.xml')
                 os.rename(out_file, out_directory + pat_num + '.xml')

@@ -22,12 +22,12 @@ def remove_inventors_2002_to_2004(in_file, out_file):
     inventor_path = './/B720'
     try:
         tree = etree.parse(in_file, parser=invalid_validator)
-    except Exception as e:
-        print(e + '==> Trying the magic parser...')
+    except Exception as outer_e:
+        print(str(outer_e) + ' ==> Trying the magic parser...')
         try:
             tree = etree.parse(in_file, parser=magic_validator)
-        except Exception as e:
-            print(e)
+        except Exception as inner_e:
+            print(str(inner_e) + " ==> magic parser didn't work.")
             raise
     root = tree.getroot()
     pat_num = root.find(pat_num_path).text
@@ -54,12 +54,12 @@ def remove_inventors_2005_to_present(in_file, out_file):
     applicants_paths = ['.//us-applicants', './/applicants']
     try:
         tree = etree.parse(in_file, parser=invalid_validator)
-    except Exception as e:
-        print(e + '==> Trying the magic parser...')
+    except Exception as outer_e:
+        print(str(outer_e) + ' ==> Trying the magic parser...')
         try:
             tree = etree.parse(in_file, parser=magic_validator)
-        except Exception as e:
-            print(e)
+        except Exception as inner_e:
+            print(str(inner_e) + " ==> magic parser didn't work.")
             raise
     root = tree.getroot()
     pat_num = root.find(pat_num_path).text
