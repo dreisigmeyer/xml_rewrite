@@ -4,12 +4,10 @@ import warnings
 
 invalid_validator = etree.XMLParser(
     dtd_validation=True,
-    resolve_entities=False,
-    encoding='utf-8')
+    resolve_entities=False)
 magic_validator = etree.XMLParser(
     dtd_validation=True,
     resolve_entities=False,
-    encoding='utf-8',
     recover=True)
 
 
@@ -25,8 +23,12 @@ def remove_inventors_2002_to_2004(in_file, out_file):
     try:
         tree = etree.parse(in_file, parser=invalid_validator)
     except Exception as e:
-        tree = etree.parse(in_file, parser=magic_validator)
-        print(e)
+        print(e + '==> Trying the magic parser...')
+        try:
+            tree = etree.parse(in_file, parser=magic_validator)
+        except Exception as e:
+            print(e)
+            raise
     root = tree.getroot()
     pat_num = root.find(pat_num_path).text
     if not pat_num:
@@ -36,7 +38,7 @@ def remove_inventors_2002_to_2004(in_file, out_file):
         root.find(inventor_path).clear()
     except AttributeError:  # root.find(inventor_path) is NoneType
         pass
-    tree.write(out_file, encoding="UTF-8", xml_declaration=True)
+    tree.write(out_file, encoding='UTF-8', xml_declaration=True)
     return pat_num
 
 
@@ -53,8 +55,12 @@ def remove_inventors_2005_to_present(in_file, out_file):
     try:
         tree = etree.parse(in_file, parser=invalid_validator)
     except Exception as e:
-        tree = etree.parse(in_file, parser=magic_validator)
-        print(e)
+        print(e + '==> Trying the magic parser...')
+        try:
+            tree = etree.parse(in_file, parser=magic_validator)
+        except Exception as e:
+            print(e)
+            raise
     root = tree.getroot()
     pat_num = root.find(pat_num_path).text
     if not pat_num:
@@ -69,5 +75,5 @@ def remove_inventors_2005_to_present(in_file, out_file):
             root.find(applicants_path).clear()
         except AttributeError:  # root.find(applicants_path) is NoneType
             pass
-    tree.write(out_file, encoding="UTF-8", xml_declaration=True)
+    tree.write(out_file, encoding='UTF-8', xml_declaration=True)
     return pat_num

@@ -1,5 +1,6 @@
 import datetime
 import glob
+from itertools import islice
 from multiprocessing import Process
 import os
 import random
@@ -51,7 +52,9 @@ def process_files(directories):
         out_directory = mod_xml_path + uspto_name
         shutil.rmtree(out_directory, ignore_errors=True)
         os.mkdir(out_directory)
+        tar_orig = in_directory
         in_directory += '/'
+        tar_mod = out_directory
         out_directory += '/'
         for in_file in glob.glob(in_directory + '*.xml'):
             filename = os.path.basename(in_file)
@@ -61,16 +64,28 @@ def process_files(directories):
                 try:
                     pat_num = remove_inventors_2002_to_2004(in_file, out_file)
                 except Exception as e:
-                    print(e)
+                    print("Problem in directory " + in_directory)
+                    N = 10
+                    with open(in_file) as myfile:
+                        head = list(islice(myfile, N))
+                    print(head + '\n')
             else:
                 try:
                     pat_num = remove_inventors_2005_to_present(
                         in_file, out_file)
                 except Exception as e:
-                    print(e)
+                    print("Problem in directory " + in_directory)
+                    N = 10
+                    with open(in_file) as myfile:
+                        head = list(islice(myfile, N))
+                    print(head + '\n')
             if pat_num:
                 os.rename(in_file, in_directory + pat_num + '.xml')
                 os.rename(out_file, out_directory + pat_num + '.xml')
+        subprocess.run([
+            'tar', '-cjf', tar_orig + '.tar.bz2', tar_orig, '--remove-files'])
+        subprocess.run([
+            'tar', '-cjf', tar_mod + '.tar.bz2', tar_mod, '--remove-files'])
 
 
 number_of_processes = int(sys.argv[1])

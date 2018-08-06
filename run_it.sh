@@ -20,9 +20,9 @@ clean_dtds ./rewriter/cleaned_DTDs/\*.dtd ./rewriter/cleaned_DTDs/ST32-US-Grant-
 NUM_PY_THREADS=4
 python -m rewriter $NUM_PY_THREADS
 
-for FOLDER_NAME in ./rewriter/original_xml_files/*; do
-    zip -q -r "$FOLDER_NAME"
-done
-for FOLDER_NAME in ./rewriter/modified_xml_files/*; do
-    zip -q -r "$FOLDER_NAME"
-done
+# for FOLDER_NAME in ./rewriter/original_xml_files/*; do
+#     zip -qr "$FOLDER_NAME"
+# done
+# for FOLDER_NAME in ./rewriter/modified_xml_files/*; do
+#     zip -qr "$FOLDER_NAME"
+# done
