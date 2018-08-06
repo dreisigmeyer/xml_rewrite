@@ -1,12 +1,10 @@
 import datetime
 import glob
-from itertools import islice
 from multiprocessing import Process
 import os
 import random
 import re
-from rewriter.rewriter import remove_inventors_2002_to_2004
-from rewriter.rewriter import remove_inventors_2005_to_present
+from rewriter.rewriter import remove_inventors
 import shutil
 import subprocess
 import sys
@@ -28,6 +26,19 @@ def split_seq(seq, num_processes):
         newseq.append(
             seq[int(round(i * splitsize)):int(round((i + 1) * splitsize))])
     return newseq
+
+
+def xmllint_damnit(filename):
+    """
+    Run xmllint on files that are being difficult...
+    there was some latin-1 in a file
+    """
+    split_args = [
+        'xmllint',
+        '--encode', 'utf8',
+        '--output', filename,
+        filename]
+    subprocess.run(split_args)
 
 
 def process_files(directories):
@@ -60,29 +71,20 @@ def process_files(directories):
             filename = os.path.basename(in_file)
             out_file = out_directory + filename
             pat_num = ''
-            if 2002 <= grant_year <= 2004:
+            try:
+                pat_num = remove_inventors(in_file, out_file, grant_year)
+            except Exception as e:
+                print(e)
+                print('Problem in directory ' + in_directory)
+                print('Trying to xmllint the file...')
                 try:
-                    pat_num = remove_inventors_2002_to_2004(in_file, out_file)
-                except Exception as e:
-                    print("Problem in directory " + in_directory)
-                    N = 10
-                    with open(in_file) as myfile:
-                        head = list(islice(myfile, N))
-                        for line in head:
-                            print(line)
-                    print('\n')
-            else:
-                try:
-                    pat_num = remove_inventors_2005_to_present(
-                        in_file, out_file)
-                except Exception as e:
-                    print("Problem in directory " + in_directory)
-                    N = 10
-                    with open(in_file) as myfile:
-                        head = list(islice(myfile, N))
-                        for line in head:
-                            print(line)
-                    print('\n')
+                    xmllint_damnit(in_file)
+                    pat_num = remove_inventors(in_file, out_file, grant_year)
+                except Exception as e_xmllint:
+                    print('xmllint failed:')
+                    print(e_xmllint)
+            finally:
+                print('\n')
             if pat_num:
                 os.rename(in_file, in_directory + pat_num + '.xml')
                 os.rename(out_file, out_directory + pat_num + '.xml')

@@ -7,7 +7,6 @@ function unzip_and_csplit {
     FILENAME=$(basename -- "$INDIR")
     unzip -qq -o -j "$1" -d "$OUTDIR/$FILENAME"
     # there's HTML etc in the XML files
-#    perl -w gbd_cleaner.pl "$OUTDIR/$FILENAME/$FILENAME.xml"
     csplit -sz -f "$OUTDIR/$FILENAME/" -b '%d.xml' "$OUTDIR/$FILENAME/$FILENAME.xml" '/^<?xml/' '{*}'
     rm "$OUTDIR/$FILENAME/$FILENAME.xml"
     rm -f "$OUTDIR/$FILENAME/"*.txt

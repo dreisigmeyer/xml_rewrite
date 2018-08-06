@@ -7,6 +7,10 @@ A standard Anaconda Python (https://www.anaconda.com/download/) install was used
 The code was developed using Python 3.6.
 
 
+## xmllint
+You'll need to have xmllint installed.
+Some of the XML files have latin-1 encoded characters.
+
 ## Running the code
 From this directory issue  
 `nohup ./run_it.sh &`  
