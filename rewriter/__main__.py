@@ -83,8 +83,8 @@ def process_files(directories):
                 except Exception as e_xmllint:
                     print('xmllint failed:')
                     print(e_xmllint)
-            finally:
-                print('\n')
+                finally:
+                    print('\n')
             if pat_num:
                 os.rename(in_file, in_directory + pat_num + '.xml')
                 os.rename(out_file, out_directory + pat_num + '.xml')

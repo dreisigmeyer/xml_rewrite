@@ -2,11 +2,13 @@
 
 
 function clean_dtds {
-    # The DTD files need to be modified for the modified XML files we deal with
-    # The first one works for 2005-present (as of 2014)
-    # The second for 2002-2004
+    # The truncated XML files need to be edited since they reference external 
+    # entities that are no longer there.
+    # The first one is for 2005-present (as of 2014).
+    # The second and third are for 2002-2004.
     sed -i -r 's_(<!ELEMENT us-patent-grant.*>)_<!--\1-->\n<!ELEMENT us-patent-grant (us-bibliographic-data-grant , abstract*, sequence-list-doc?)>_' $1
     sed -i -r 's_(<!ELEMENT PATDOC.*>)_<!--\1-->\n<!ELEMENT PATDOC (SDOBI,SDOAB?,SDODE,SDOCL*,SDODR?,SDOCR?)>_' $2
+    sed -i -r 's_(<!ENTITY .* SYSTEM .* NDATA .*>)_<!--\1-->_' $2
 }
 
 
