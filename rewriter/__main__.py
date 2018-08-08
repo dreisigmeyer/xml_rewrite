@@ -45,6 +45,18 @@ def iconvit_damnit(filename):
     subprocess.run(mv_args)
 
 
+def sedit_damnit(filename):
+    """
+    Cooment out some annoying things in 2002-2004 patents
+    """
+    sed_args = [
+        'sed',
+        '-ir',
+        '\'s_(<!ELEMENT .* SYSTEM .* NDATA .*>)_<!--\\1-->_g\'',
+        filename]
+    subprocess.run(sed_args)
+
+
 def process_files(directories):
     mod_xml_path = 'rewriter/modified_xml_files/'
     orig_xml_path = 'rewriter/original_xml_files/'
@@ -60,7 +72,7 @@ def process_files(directories):
         in_directory = unzip_and_csplit.stdout.decode("ascii").strip()
         uspto_name = os.path.basename(in_directory)
         grant_year = int(grant_year_re.match(uspto_name).group(1)[:4])
-        if grant_year not in range(2002, current_yr):
+        if not 2002 <= grant_year <= current_yr:
             warnings.warn(
                 'Patent grant year ' + str(grant_year) +
                 ' is not a valid year (currently 2002 to present).')
@@ -72,6 +84,8 @@ def process_files(directories):
         out_directory += '/'
         for in_file in glob.glob(in_directory + '*.xml'):
             filename = os.path.basename(in_file)
+            if 2002 <= grant_year <= 2004:
+                sedit_damnit(in_file)
             out_file = out_directory + filename
             pat_num = ''
             try:
