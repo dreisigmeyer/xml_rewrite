@@ -1,6 +1,5 @@
 # import xml.etree.ElementTree as ElementTree
 from lxml import etree
-import warnings
 
 # invalid_validator = etree.XMLParser(
 #     dtd_validation=True,
@@ -31,16 +30,15 @@ def remove_inventors(in_file, out_file, grant_yr):
         applicants_paths = ['.//us-applicants', './/applicants']
     try:
         tree = etree.parse(in_file, parser=magic_validator)
-    except Exception as e:
-        print(e)
-        raise ValueError("\t==> magic parser didn't work.")
+    except Exception as etree_err:
+        raise etree_err
     root = tree.getroot()
     try:
         pat_num = root.find(pat_num_path).text
     except Exception:
         pat_num = False
     if not pat_num:
-        warnings.warn('No patent number associated with ' + in_file)
+        print('No patent number associated with ' + in_file)
         return False
     try:
         root.find(inventor_path).clear()

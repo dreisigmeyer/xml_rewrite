@@ -28,21 +28,26 @@ def split_seq(seq, num_processes):
     return newseq
 
 
-def xmllint_damnit(filename):
+def iconvit_damnit(filename):
     """
-    Run xmllint on files that are being difficult...
-    there was some latin-1 in a file
+    Run iconv on files that are being difficult...
+    there was some latin-1 in a file so we strip it out.
     """
-    split_args = [
-        'xmllint',
-        '--encode', 'utf8',
-        '--output', filename,
+    iconv_args = [
+        'iconv',
+        '-f utf-8',
+        '-t utf-8',
+        '-c',
+        '-o', filename + '.holder',
         filename]
-    subprocess.run(split_args)
+    subprocess.run(iconv_args)
+    mv_args = ['mv', filename + '.holder', filename]
+    subprocess.run(mv_args)
 
 
 def process_files(directories):
     mod_xml_path = 'rewriter/modified_xml_files/'
+    orig_xml_path = 'rewriter/original_xml_files/'
     grant_year_re = re.compile('i?pgb([0-9]{8})')
     now = datetime.datetime.now()
     current_yr = now.year + 1
@@ -63,9 +68,7 @@ def process_files(directories):
         out_directory = mod_xml_path + uspto_name
         shutil.rmtree(out_directory, ignore_errors=True)
         os.mkdir(out_directory)
-        tar_orig = in_directory
         in_directory += '/'
-        tar_mod = out_directory
         out_directory += '/'
         for in_file in glob.glob(in_directory + '*.xml'):
             filename = os.path.basename(in_file)
@@ -74,24 +77,27 @@ def process_files(directories):
             try:
                 pat_num = remove_inventors(in_file, out_file, grant_year)
             except Exception as e:
+                print('Problem in directory ' + in_directory + ':')
                 print(e)
-                print('Problem in directory ' + in_directory)
-                print('Trying to xmllint the file...')
+                print('Running iconv on the file...')
                 try:
-                    xmllint_damnit(in_file)
+                    iconvit_damnit(in_file)
                     pat_num = remove_inventors(in_file, out_file, grant_year)
+                    print('Success!')
                 except Exception as e_xmllint:
-                    print('xmllint failed:')
+                    print('iconv failed:')
                     print(e_xmllint)
-                finally:
-                    print('\n')
             if pat_num:
                 os.rename(in_file, in_directory + pat_num + '.xml')
                 os.rename(out_file, out_directory + pat_num + '.xml')
         subprocess.run([
-            'tar', '-cjf', tar_orig + '.tar.bz2', tar_orig, '--remove-files'])
+            'tar', '-cjf', orig_xml_path + uspto_name + '.tar.bz2',
+            '--directory', orig_xml_path, uspto_name,
+            '--remove-files'])
         subprocess.run([
-            'tar', '-cjf', tar_mod + '.tar.bz2', tar_mod, '--remove-files'])
+            'tar', '-cjf', mod_xml_path + uspto_name + '.tar.bz2',
+            '--directory', mod_xml_path, uspto_name,
+            '--remove-files'])
 
 
 number_of_processes = int(sys.argv[1])
