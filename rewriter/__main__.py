@@ -51,7 +51,7 @@ def sedit_damnit(filename):
     I had to make one big string otherwise sed wouldn't run...
     """
     sed_args = '''
-        sed -ir "s_(<!ELEMENT .* SYSTEM .* NDATA .*>)_<!--\1-->_g" {0}
+        sed -i -r "s_(<!ENTITY .* SYSTEM .* NDATA .*>)_<!--\\1-->_g" {0}
         '''.format(filename).strip()
     subprocess.run(sed_args, shell=True)
 
@@ -79,6 +79,10 @@ def process_files(directories):
         out_directory = mod_xml_path + uspto_name
         shutil.rmtree(out_directory, ignore_errors=True)
         os.mkdir(out_directory)
+        cp_args = '''
+            cp -r ./rewriter/cleaned_DTDs/* {0}
+            '''.format(out_directory).strip()
+        subprocess.run(cp_args, shell=True)
         in_directory += '/'
         out_directory += '/'
         for in_file in glob.glob(in_directory + '*.xml'):
