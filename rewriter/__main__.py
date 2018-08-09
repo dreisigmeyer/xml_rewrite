@@ -47,14 +47,13 @@ def iconvit_damnit(filename):
 
 def sedit_damnit(filename):
     """
-    Cooment out some annoying things in 2002-2004 patents
+    Comment out some annoying things in 2002-2004 patents.
+    I had to make one big string otherwise sed wouldn't run...
     """
-    sed_args = [
-        'sed',
-        '-ir',
-        '\'s_(<!ELEMENT .* SYSTEM .* NDATA .*>)_<!--\\1-->_g\'',
-        filename]
-    subprocess.run(sed_args)
+    sed_args = '''
+        sed -ir "s_(<!ELEMENT .* SYSTEM .* NDATA .*>)_<!--\1-->_g" {0}
+        '''.format(filename).strip()
+    subprocess.run(sed_args, shell=True)
 
 
 def process_files(directories):
