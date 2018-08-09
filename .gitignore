@@ -1,9 +1,4 @@
-# CLion and Sublime stuff
-.idea/
-*.c
-CMakeLists.txt
-cmake-build-debug/
-_Deparsed_XSubs.pm
+# Sublime stuff
 *.sublime-project
 *.sublime-workspace
 
@@ -11,5 +6,3 @@ _Deparsed_XSubs.pm
 *.bz2
 *.zip
 nohup*
-messages*
-SAVED/
