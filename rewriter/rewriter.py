@@ -1,10 +1,7 @@
 # import xml.etree.ElementTree as ElementTree
 from lxml import etree
 
-# invalid_validator = etree.XMLParser(
-#     dtd_validation=True,
-#     encoding='utf-8',
-#     resolve_entities=False)
+
 magic_validator = etree.XMLParser(
     dtd_validation=True,
     resolve_entities=False,
