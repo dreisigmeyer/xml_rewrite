@@ -6,4 +6,4 @@
 *.bz2
 *.zip
 nohup*
-rewriter/__pychache__/
+/rewriter/__pychache__/*
