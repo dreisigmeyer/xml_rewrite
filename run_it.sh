@@ -9,9 +9,16 @@ function clean_dtds {
     sed -i -r 's_(<!ELEMENT PATDOC.*>)_<!--\1-->\n<!ELEMENT PATDOC (SDOBI,SDOAB?,SDODE,SDOCL*,SDODR?,SDOCR?)>_' $2
 }
 
+if [[ $# -eq 0 ]] ; then
+	NUM_PY_THREADS=1
+elif [[ $# -eq 1 ]] ; then
+	NUM_PY_THREADS=$1
+else
+	echo 'Wrong number of parameters passed to xml_rewrite: only NUM_PY_THREADS needed.'
+    exit 1
+fi
 
 cp -r ./rewriter/DTDs/* ./rewriter/cleaned_DTDs
 clean_dtds ./rewriter/cleaned_DTDs/\*.dtd ./rewriter/cleaned_DTDs/ST32-US-Grant-025xml.dtd
 
-NUM_PY_THREADS=4
 python -m rewriter $NUM_PY_THREADS
