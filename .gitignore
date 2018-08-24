@@ -6,4 +6,4 @@
 *.bz2
 *.zip
 nohup*
-__pychache__/
+__pycache__/
