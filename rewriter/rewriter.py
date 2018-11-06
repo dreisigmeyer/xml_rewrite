@@ -66,11 +66,11 @@ def remove_inventors(in_file, out_file, grant_yr):
     root = tree.getroot()
     try:
         pat_num = root.find(pat_num_path).text
-    except Exception:
+    except Exception as e:
         pat_num = False
-    if not pat_num:
         print('No patent number associated with ' + in_file)
-        return False
+        print('Exception: ' + str(e))
+        return pat_num
     try:
         root.find(inventor_path).clear()
     except AttributeError:  # root.find(inventor_path) is NoneType
