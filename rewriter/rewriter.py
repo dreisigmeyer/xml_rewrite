@@ -63,8 +63,8 @@ def remove_inventors(in_file, out_file, grant_yr):
         tree = etree.parse(in_file, parser=magic_validator)
     except Exception as etree_err:
         raise etree_err
-    root = tree.getroot()
     try:
+        root = tree.getroot()
         pat_num = root.find(pat_num_path).text
     except Exception as e:
         pat_num = False
