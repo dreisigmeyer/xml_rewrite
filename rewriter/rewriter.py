@@ -3,16 +3,10 @@ import glob
 from lxml import etree
 import os
 import re
+from shared_python_code.xml_paths import magic_validator
 import shutil
 import subprocess
 import warnings
-
-
-magic_validator = etree.XMLParser(
-    dtd_validation=True,
-    resolve_entities=False,
-    encoding='utf-8',
-    recover=True)
 
 
 def iconvit_damnit(filename):
