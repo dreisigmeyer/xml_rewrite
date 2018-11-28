@@ -10,10 +10,11 @@ import warnings
 
 
 def iconvit_damnit(filename):
-    """
-    Run iconv on files that are being difficult...
+    '''Run iconv on files that are being difficult...
     there was some latin-1 in a file so we strip it out.
-    """
+
+    filename -- name of the file to run iconv on
+    '''
     iconv_args = [
         'iconv',
         '-f utf-8',
@@ -27,10 +28,11 @@ def iconvit_damnit(filename):
 
 
 def sedit_damnit(filename):
-    """
-    Comment out some annoying things in 2002-2004 patents.
-    I had to make one big string otherwise sed wouldn't run...
-    """
+    '''Comment out some annoying things in 2002-2004 patents.
+    I had to make one big string otherwise sed wouldn't run.
+
+    filename -- name of the file to run sed on
+    '''
     sed_args = '''
         sed -i -r "s_(<!ENTITY .* SYSTEM .* NDATA .*>)_<!--\\1-->_g" {0}
         '''.format(filename).strip()
@@ -38,13 +40,12 @@ def sedit_damnit(filename):
 
 
 def remove_inventors(in_file, out_file, grant_yr):
-    """
-    This strips out the inventor information from the USPTO XML files
-    :param in_file: original XML file
-    :param out_file: file to write to
-    :param grant_yr: the grant year of the patent
-    :return: the patent number associated with in_file
-    """
+    '''This strips out the inventor information from the USPTO XML files
+
+    in_file -- original XML file
+    out_file -- file to write to
+    grant_yr -- the grant year of the patent
+    '''
     if 2002 <= grant_yr <= 2004:
         pat_num_path = './/B110/DNUM/PDAT'
         inventor_path = './/B720'
@@ -79,6 +80,13 @@ def remove_inventors(in_file, out_file, grant_yr):
 
 
 def process_files(directories):
+    '''The main function that preprocessing the raw USPTO XML files.
+    It splits the concatenated files into single valid XML files,
+    name them after the PRDN and creates a new, separate file with
+    the inventor names removed.
+
+    directories -- the directory list containing
+    '''
     mod_xml_path = 'rewriter/modified_xml_files/'
     orig_xml_path = 'rewriter/original_xml_files/'
     grant_year_re = re.compile('i?pgb([0-9]{8})')

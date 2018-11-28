@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# This will download the data files from the USPTO
+
 for YEAR in {2002..2017}
 do
     COUNT=`ls rewriter/raw_xml_files/*pgb"$YEAR"*_wk*.zip 2> /dev/null | wc -l`

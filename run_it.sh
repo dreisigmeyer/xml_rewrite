@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# This runs all of the code with a command line argument giving the number of threads to use
 
 function clean_dtds {
     # The truncated XML files need to be edited.
