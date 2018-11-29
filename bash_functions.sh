@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Function use in reqriter/rewriter.py/process_files
+# Function use in rewriter/rewriter.py/process_files
 
 function unzip_and_csplit {
     # will get our USPTO XML files ready for processing
