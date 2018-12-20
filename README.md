@@ -1,3 +1,5 @@
+See also the README for **shared_python_code**.
+
 ## Getting the data
 The included script _get\_uspto\_data.sh_ will download all the required zip files from the USPTO website.
 
