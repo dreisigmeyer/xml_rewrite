@@ -3,7 +3,7 @@
 # This will download the data files from the USPTO
 
 PATH_TO_XML=`dirname $(readlink -f $0)`
-for YEAR in {2002..2017}
+for YEAR in {2002..2019}
 do
     COUNT=`ls "$PATH_TO_XML"/rewriter/raw_xml_files/*pgb"$YEAR"*_wk*.zip 2> /dev/null | wc -l`
     while [ "$COUNT" -lt 52 ]; do
